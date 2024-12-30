@@ -1,5 +1,27 @@
 # Master Coding Interviews
 
+- [Master Coding Interviews](#master-coding-interviews)
+  - [Arrays: Two Sum (Easy)](#arrays-two-sum-easy)
+  - [Arrays: Container With Most Water (Medium)](#arrays-container-with-most-water-medium)
+  - [Arrays: Trapping Rainwater (Hard)](#arrays-trapping-rainwater-hard)
+  - [Strings: Typed Out Strings (Easy) \*\*](#strings-typed-out-strings-easy-)
+  - [Strings: Longest Substring Without Repeating Characters (Medium)](#strings-longest-substring-without-repeating-characters-medium)
+  - [Strings: Valid Palindrome and Almost Palindrome](#strings-valid-palindrome-and-almost-palindrome)
+  - [Intro Linked Lists - Basics, Reverse A LL](#intro-linked-lists---basics-reverse-a-ll)
+  - [Linked Lists: M, N Reversals (Medium)](#linked-lists-m-n-reversals-medium)
+  - [Linked List: Merge Multi-Level Doubly Linked List (Medium)](#linked-list-merge-multi-level-doubly-linked-list-medium)
+  - [Linked List: Cycle Detection (Medium) \*\*](#linked-list-cycle-detection-medium-)
+  - [Stacks: Valid Parentheses (Easy)](#stacks-valid-parentheses-easy)
+  - [Stacks: Minimum Brackets To Remove (Medium)](#stacks-minimum-brackets-to-remove-medium)
+  - [Queues: Implement Queue with Stacks (Easy)](#queues-implement-queue-with-stacks-easy)
+  - [Recursion: Kth Largest Element (Sorting and Hoare's QuickSelect)](#recursion-kth-largest-element-sorting-and-hoares-quickselect)
+  - [Recursion: Start and End of Target (Medium) Binary Search](#recursion-start-and-end-of-target-medium-binary-search)
+  - [Binary Trees: Maximum Depth of Binary Tree (Easy)](#binary-trees-maximum-depth-of-binary-tree-easy)
+  - [Binary Trees: Level Order of Binary Tree (Medium)](#binary-trees-level-order-of-binary-tree-medium)
+  - [Binary Trees: Right Side View of Tree (Medium)](#binary-trees-right-side-view-of-tree-medium)
+  - [Full and Complete Binary Trees: Number of Nodes in Complete Tree](#full-and-complete-binary-trees-number-of-nodes-in-complete-tree)
+
+
 ## [Arrays: Two Sum (Easy)](https://leetcode.com/problems/two-sum/)
 
 - Q
@@ -1180,3 +1202,170 @@ const searchRange = function(nums, target){
 
 ## Binary Trees: Maximum Depth of Binary Tree (Easy)
 
+- Breadth First Search
+- Depth First Search - recursive
+  - Pre-order traversal
+  - In-order traversal
+  - Post-order traversal
+
+- Q 
+  - given binary tree, find max depth
+  - max depth = number of nodes along the longest path from root to leaf node
+- Steps
+  - VC
+    - what to return if tree is empty?
+  - WTC
+    - best case
+    - worst case -- only one path, say a linked list O(N)
+    - null case
+
+```js
+// O(N) TC; O(Height of tree) SC -- LOG N, N(worst case);
+const maxDepth = function(node, currentDept){
+    if(!node){
+        return currentDepth;
+    }
+
+    currentDepth++;
+
+    return Math.max(maxDepth(node.left, currentDepth), maxDepth(node.right, currentDepth));
+}
+```
+
+## Binary Trees: Level Order of Binary Tree (Medium)
+
+- Q 
+  - given binary tree, return level order traversal of node values as array
+  - values at every level (left to right)
+- Steps
+  - VC
+    - what if tree is empty?
+  - WTC
+    - each level is an array of it's own. so array of arrays
+
+- BFS
+  - top down, left to right
+- Approach
+  - identify level of tree
+  - initialize our array
+  - push our array to final result
+
+```js
+const bfs = function(root){
+    res = [], q = [root];
+    while(q.length){
+        node = q.shift();
+        res.push(node.val);
+        if(node.left) q.push(node.left);
+        if(node.right) q.push(node.right);
+    }
+    
+    return res;
+}
+
+// O(N) TC; O(N) SC;
+const levelOrder = function(root){
+    if(!root) return [];
+
+    const res = [];
+    const queue = [root];
+
+    while(queue.length){
+        let length = queue.length, count = 0; 
+        const currentLevelValues = [];
+
+        while(count < length){
+            const currentNode = queue.shift();
+            currentLevelValues.push(currentNode.value);
+
+            if(currentNode.left) queue.push(currentNode.left);
+            if(currentNode.right) queue.push(currentNode.right);
+            count++;
+        }
+
+        res.push(currentLevelValues);
+    }
+
+    return res;
+}
+```
+
+## Binary Trees: Right Side View of Tree (Medium)
+
+- Q
+  - Given binary tree, imaging you are standing to right of the tree. 
+  - Return an array of values of the ndoes you can see ordered from top to bottom
+- Steps
+- Approach
+  - BFS
+    - identify the end of level
+    - add last node to result
+  - DFS
+    - prioritize right side
+    - keep track of level of nodes
+  - traversals -- always going from left to right
+    - pre-order (usually NLR) --> (here) NRL
+    - in-order (usually LNR) --> (here) RNL
+    - post-order (usually LRN) --> (here) RLN
+- Don't pick one and force a solution out of it if you don't see a pattern right away
+- Instead, take a step back, and find a pattern. 
+
+```js
+// BFS: O(N) TC; O(W fattest level) SC; 
+const rightSideView = function(root){
+    if(!root) return [];
+
+    const res = [], queue = [root];
+
+    while(queue.length){
+        let length = queue.length, count = 0;
+
+        while(count < length){
+            const currentNode = queue.shift();
+            
+            if(currentNode.left) queue.push(currentNode.left);
+            if(currentNode.right) queue.push(currentNode.right);
+            count++;
+
+            if (count === length){
+                res.push(currentNode.val);
+            }
+        }
+    }
+}
+``` 
+
+```js
+// DFS: O(N) TC; O(H height of tree) SC;
+const rightSideView = function(root){
+    const result = [];
+    dfs(root, 0, result);
+    return result;
+}
+
+const dfs = function(node, currLevel, result){
+    if(!node) return; 
+
+    if(currLevel >= result.length) result.push(node.val);
+
+    if(ndoe.right) dfs(node.right, currLevel + 1, result);
+    if(node.left) dfs(node.left, currLevel + 1, result);
+}
+```
+
+## Full and Complete Binary Trees: Number of Nodes in Complete Tree
+
+- Q
+  - full tree: every node has either two children or zero children (any level, not all levels might be completely full)
+  - complete tree: all levels are completely full with exception of last level (must be filled from left to right)
+  - full & complete: all levels, including last is full. 
+  - given complete binary tree, count number of nodes. 
+- Steps
+  - VC
+    - what if empty? 
+  - WTC
+    - complete tree 
+    - level is completely full
+    - level is partially values 
+    - level with one value
+  - 

@@ -1,3 +1,11 @@
+# Graph Data Structure 
+
+- [Graph Data Structure](#graph-data-structure)
+  - [Introduction](#introduction)
+  - [Graph Representation](#graph-representation)
+  - [Graph Traversal](#graph-traversal)
+  - [Graph Algorithms](#graph-algorithms)
+
 ## Introduction
 
 - graph -- non linear data structure 
